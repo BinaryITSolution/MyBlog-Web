@@ -8,6 +8,13 @@
 
 include "../auth/db.php";
 
+/**
+ * @param $user
+ * @param $email
+ * @param $password
+ * @param $created_Date
+ * @return bool|mysqli_result|string
+ */
 function signUp($user, $email, $password, $created_Date)
 {
     global $con;
@@ -16,7 +23,7 @@ function signUp($user, $email, $password, $created_Date)
     $USER_PASSWORD = mysqli_real_escape_string($con, $password);
 
     $PASSWORD = password_hash($USER_PASSWORD, PASSWORD_ARGON2ID);
-    $query = " INSERT INTO `users`(`name`, `email`, `password`, `created_date`) ";
+    $query = " INSERT INTO `users`(`name`, `email`, `password`, `created_date`)";
     $query .= "VALUES ('$USER_NAME','$USER_EMAIL','$PASSWORD','$created_Date')";
 
     $result = mysqli_query($con, $query);
@@ -53,10 +60,9 @@ function logIn($email, $password)
         }
 
     }else{
-        die("Query Failed" . mysqli_error($con));
-        ///return "Query Failed";
+        //die("Query Failed" . mysqli_error($con));
+        return "Query Failed";
     }
-
 }
 
 function isEmailExist($email){
@@ -75,4 +81,17 @@ function isEmailExist($email){
 
         return "Query Failed";
     }
+}
+
+function getUserDetailByEmail($email){
+    global $con;
+    $query = "SELECT * FROM users WHERE email = '$email'";
+    $result = mysqli_query($con,$query);
+    if ($result){
+        return $result;
+    }
+    else{
+        return false;
+    }
+
 }
